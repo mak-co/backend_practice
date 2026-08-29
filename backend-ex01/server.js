@@ -87,25 +87,35 @@ app.post("/create-tasks", (req, res) => {
 // 3) PATCH
 app.patch("/tasks/:id", (req, res) => {
 
-
   //validating the incoming data from the request 
   const {title,completed}=req.body 
   const change = {}
-  
-  if(title !==undefined && typeof title ==="string"){
-    change.title=title
-  }else{
-    return res.status(404).json({
-      message:"title must be a string"
-    })
+ 
+if (title !== undefined) {
+  if (typeof title !== "string") {
+    return res.status(400).json({
+      message: "title must be a string",
+    });
   }
 
-  if(completed !== undefined && typeof completed =="boolean"){
-    change.completed = completed
-  }else{
+  change.title = title;
+}
+
+  if (completed !== undefined) {
+    if (typeof completed !== "boolean") {
+      return res.status(400).json({
+        message: "completed must be true/false",
+      });
+    }
+
+    change.completed = completed;
+  }
+
+  //checking if change is empty or not (validating)
+  if (Object.keys(change).length === 0) {
     return res.status(400).json({
-      message: "completed must be in true/false"
-    })
+      message: "At least one field is required",
+    });
   }
 
   console.log(change);
@@ -124,10 +134,32 @@ app.patch("/tasks/:id", (req, res) => {
 
   res.status(200).json({
     message: "Successfully Updated the tasks",
+    task:task
   });
 
   console.log(tasks)
 });
+
+
+// delete
+
+app.delete("/tasks/:id",(req,res)=>{
+  const taskId =req.params.id
+  const taskExists = tasks.some(task =>task.id ===Number(taskId))
+
+  if(taskExists){
+   tasks =  tasks.filter(task=>task.id!==Number(taskId))
+    res.status(200).json({
+      message:`Deleted the task`,
+      tasks:tasks
+    })
+  }else{
+    return res.status(404).json({
+      message: "Item not found"
+    })
+  }
+})
+
 
 // creating port
 const port = process.env.PORT || 3000;
