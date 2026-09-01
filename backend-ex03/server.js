@@ -41,16 +41,16 @@ app.post("/create-task",async(req,res)=>{
 app.get("/tasks",async (req,res)=>{
     
   try{
-      const query = {};
-   
-    if (req.query.search) {
-     // following , contains the rules for finding the tasks
-     
-     //rule for search
-     query.$or = [ //$or means at least one of these rules must be true 
-      
+    const query = {};
 
-        //rule for search 
+    if (req.query.search) {
+      // following , contains the rules for finding the tasks
+
+      //rule for search
+      query.$or = [
+        //$or means at least one of these rules must be true
+
+        //rule for search
         {
           title: {
             $regex: req.query.search,
@@ -65,40 +65,76 @@ app.get("/tasks",async (req,res)=>{
         },
       ];
     }
-    
+
     if (req.query.status) {
       //rule for status which has enum values
       query.status = req.query.status;
     }
 
-    if(req.query.priority){
-      query.priority= req.query.priority
+    if (req.query.priority) {
+      query.priority = req.query.priority;
     }
-    
 
     //Note- filtering and sorting are two separate operations
-    let sorting = {createdAt:1}
-    
-    if(req.query.sort){
-     if(req.query.sort==='-createdAt'){
-      sorting.createdAt=-1
-     }
+    let sorting = {};
+
+    if (req.query.sort) {
+      const sortFields = req.query.sort.split(","); //will return an array and elements as wherever it found coma
+      sortFields.forEach((field) => {
+        if (field.startsWith("-")) {
+          sorting[field.substring(1)] = -1; //obj[var] //use value inside this variable as the property name (an object method)
+        } else {
+          sorting[field] = 1;
+        }
+      });
     }
 
-      const tasks = await Task.find(query).sort(sorting)
 
-      res.status(200).send({
-        tasks:tasks,
-        message: "all good",
-      });
+  
+    // pagination - .skip() and .limit()
+
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 10, 1); //If the client doesn't specify a limit, give them 10 tasks per page.
+    
+
+    //calculate skip
+    const skip = (page-1)*limit
+    
+    const tasks = await Task.find(query)
+                .sort(sorting)
+                .skip(skip)
+                .limit(limit)
+
+   //how many tasks match my filters in total
+   const totalTasksMatch = await Task.countDocuments(query)
+
+  //calculate the total pages
+  const totalPages = Math.ceil(totalTasksMatch/limit)
+
+
+    res.status(200).send({
+      tasks: tasks,
+      message: "all good",
+      totalTasksMatch:totalTasksMatch,
+      totalPages:totalPages
+    });
+
+
 
   }catch(err){
     res.status(500).json({
         message:"Something went wrong",
-        error:err.message
-    })
+          error:err.message
+      })
   }
 })
+
+
+
+
+
+
+
 
 const port = process.env.PORT || 5000;
 app.listen(port,()=>{
