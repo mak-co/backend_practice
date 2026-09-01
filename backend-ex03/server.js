@@ -43,9 +43,14 @@ app.get("/tasks",async (req,res)=>{
   try{
       const query = {};
    
-
     if (req.query.search) {
-      query.$or = [
+     // following , contains the rules for finding the tasks
+     
+     //rule for search
+     query.$or = [ //$or means at least one of these rules must be true 
+      
+
+        //rule for search 
         {
           title: {
             $regex: req.query.search,
@@ -61,8 +66,26 @@ app.get("/tasks",async (req,res)=>{
       ];
     }
     
+    if (req.query.status) {
+      //rule for status which has enum values
+      query.status = req.query.status;
+    }
 
-      const tasks = await Task.find(query)
+    if(req.query.priority){
+      query.priority= req.query.priority
+    }
+    
+
+    //Note- filtering and sorting are two separate operations
+    let sorting = {createdAt:1}
+    
+    if(req.query.sort){
+     if(req.query.sort==='-createdAt'){
+      sorting.createdAt=-1
+     }
+    }
+
+      const tasks = await Task.find(query).sort(sorting)
 
       res.status(200).send({
         tasks:tasks,
@@ -76,13 +99,6 @@ app.get("/tasks",async (req,res)=>{
     })
   }
 })
-
-
-
-
-
-
-
 
 const port = process.env.PORT || 5000;
 app.listen(port,()=>{
