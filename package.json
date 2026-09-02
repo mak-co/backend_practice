@@ -1,11 +1,11 @@
 {
-  "name": "backend-ex03",
+  "name": "backend-ex04",
   "version": "1.0.0",
   "description": "exercise 1: build a complete REST API from scratch",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon backend-ex03/server.js"
+    "dev": "nodemon backend-ex04/server.js"
   },
   "author": "",
   "license": "ISC",

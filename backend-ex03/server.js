@@ -10,7 +10,6 @@ app.use(express.json())
 connectDB()
 
 app.post("/create-task",async(req,res)=>{
-  console.log(req.body)
   try{
     const  task = await Task.create({
       title : req.body.title,
@@ -82,6 +81,7 @@ app.get("/tasks",async (req,res)=>{
       const sortFields = req.query.sort.split(","); //will return an array and elements as wherever it found coma
       sortFields.forEach((field) => {
         if (field.startsWith("-")) {
+          //substring(1) will make -createdBy to createdBy by removing 0 index value and starting from 1
           sorting[field.substring(1)] = -1; //obj[var] //use value inside this variable as the property name (an object method)
         } else {
           sorting[field] = 1;
@@ -89,38 +89,28 @@ app.get("/tasks",async (req,res)=>{
       });
     }
 
-
-  
     // pagination - .skip() and .limit()
 
-    const page = Math.max(Number(req.query.page) || 1, 1);
+    const page = Math.max(Number(req.query.page) || 1, 1); //Never allow these two  to be less than 1."
     const limit = Math.max(Number(req.query.limit) || 10, 1); //If the client doesn't specify a limit, give them 10 tasks per page.
-    
 
     //calculate skip
-    const skip = (page-1)*limit
-    
-    const tasks = await Task.find(query)
-                .sort(sorting)
-                .skip(skip)
-                .limit(limit)
+    const skip = (page - 1) * limit;
 
-   //how many tasks match my filters in total
-   const totalTasksMatch = await Task.countDocuments(query)
+    const tasks = await Task.find(query).sort(sorting).skip(skip).limit(limit);
 
-  //calculate the total pages
-  const totalPages = Math.ceil(totalTasksMatch/limit)
+    //how many tasks match my filters in total
+    const totalTasksMatch = await Task.countDocuments(query);
 
+    //calculate the total pages
+    const totalPages = Math.ceil(totalTasksMatch / limit);
 
     res.status(200).send({
       tasks: tasks,
       message: "all good",
-      totalTasksMatch:totalTasksMatch,
-      totalPages:totalPages
+      totalTasksMatch: totalTasksMatch,
+      totalPages: totalPages,
     });
-
-
-
   }catch(err){
     res.status(500).json({
         message:"Something went wrong",
