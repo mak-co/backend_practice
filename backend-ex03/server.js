@@ -9,6 +9,7 @@ app.use(express.json())
 
 connectDB()
 
+// post endpoint
 app.post("/create-task",async(req,res)=>{
   try{
     const  task = await Task.create({
@@ -42,7 +43,7 @@ app.get("/tasks",async (req,res)=>{
   try{
     const query = {};
 
-    if (req.query.search) {
+    if (req.query.search) {  // it means "/tasks?search=abcd"
       // following , contains the rules for finding the tasks
 
       //rule for search
@@ -52,8 +53,9 @@ app.get("/tasks",async (req,res)=>{
         //rule for search
         {
           title: {
-            $regex: req.query.search,
-            $options: "i",
+            $regex: req.query.search, // Regular expressions are patterns 
+            // used to match character combinations in strings
+            $options: "i", //i = case insensitivity
           },
         },
         {
@@ -81,7 +83,7 @@ app.get("/tasks",async (req,res)=>{
       const sortFields = req.query.sort.split(","); //will return an array and elements as wherever it found coma
       sortFields.forEach((field) => {
         if (field.startsWith("-")) {
-          //substring(1) will make -createdBy to createdBy by removing 0 index value and starting from 1
+          //substring(1) will make -createdBy to createdBy by removing 0 index value and start from 1
           sorting[field.substring(1)] = -1; //obj[var] //use value inside this variable as the property name (an object method)
         } else {
           sorting[field] = 1;

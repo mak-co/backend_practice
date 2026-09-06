@@ -1,6 +1,6 @@
 import mongoose  from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({ //creatign schema or blueprint for task data
     title:{
         type:String,
         required: true,
@@ -12,6 +12,6 @@ const taskSchema = new mongoose.Schema({
     }
 })
 
-const Task = mongoose.model("Task",taskSchema)
+const Task = mongoose.model("Task",taskSchema) //creatign model for task on which we'll run mongodb query
 
 export default Task

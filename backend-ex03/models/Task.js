@@ -1,40 +1,42 @@
 import mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  description: {
-    type: String,
-    default: '',
-    trim:true
-  },
-  status:{
-    type:String,
-    enum:{
-      values:['pending','in-progress','completed'],
+const taskSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    default:'pending'
-  },
-  priority:{
-    type:String,
-    enum:{
-      values:['low','medium','high'],
+    description: {
+      type: String,
+      default: "",
+      trim: true,
     },
-    default:'medium'
+    status: {
+      type: String,
+      enum: {
+        values: ["pending", "in-progress", "completed"], 
+        // Enum =  special data typeused to define a fixed, restricted set of named constants.
+      },
+      default: "pending",
+    },
+    priority: {
+      type: String,
+      enum: {
+        values: ["low", "medium", "high"],
+      },
+      default: "medium",
+    },
+    category: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "general",
+    },
   },
-  category:{
-    type:String,
-    trim:true,
-    lowercase:true,
-    default:'general'
-  }
-},
-{
-  timestamps:true // Automatically creates 'createdAt' and 'updatedAt' fields
-}
+  {
+    timestamps: true, // Automatically creates 'createdAt' and 'updatedAt' fields
+  },
 );
 
 

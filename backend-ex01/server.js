@@ -43,7 +43,7 @@ app.get("/tasks", (req, res) => {
 app.get("/tasks/:id", (req, res) => {
   //access the parameter value via req.params
   const tasksId = req.params.id;
-  //checking if the response id in the route exist in the database(tasks)
+  //checking if the response id in the route exist in the database(tasks) and Note: mongoDb makes it easier 
   const response = tasks.find((task) => task.id === Number(tasksId));
   if (response) {
     res.status(200).send(response);

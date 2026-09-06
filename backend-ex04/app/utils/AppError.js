@@ -5,7 +5,7 @@ class AppError extends Error {
         this.success = false;
     }
 }
-
+ 
 export default AppError
 
 // A class is basically a blueprint for creatig objects
@@ -17,3 +17,11 @@ export default AppError
 //  }
 // }
 
+// AppError
+// │
+// ├── Error part
+// │     └── message
+// │
+// └── Your custom part
+//       ├── statusCode
+//       └── success

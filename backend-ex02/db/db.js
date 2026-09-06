@@ -15,7 +15,10 @@ async function connectDB() {
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
+    process.exit(1); // Exiting with 1 signals a "general error". It alerts
+    //  the operating system, build tools, or continuous integration (CI/CD) 
+    // pipelines that the program crashed, encountered unhandled data,
+    // or failed a mandatory condition
   }
 }
 

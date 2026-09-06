@@ -13,9 +13,14 @@ const app = express()
 
 app.use(express.json())
 
-app.use(requestLogger)
+app.use(requestLogger)  // Note - we use Morgan for this &
+// morgan is basically a pre-built request-logging middleware.
 
 app.use("/tasks",taskRoutes)
+// Note - is Express's built-in way of doing Route Modularization.
+// Instead of writing all your HTTP endpoints directly on the main 
+// app object in one massive file, it attaches a dedicated router file 
+// (taskRoutes) to a specific URL path prefix ("/tasks").
 
 app.use(errorMiddleWare)
 
