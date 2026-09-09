@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
 import env from "../config/env.js"
-import cookieParser from "cookie-parser";
 
 
 
