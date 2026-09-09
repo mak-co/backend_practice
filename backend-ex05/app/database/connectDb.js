@@ -4,7 +4,9 @@ import env from "../config/env.js";
 
 async function connectDB() {
     try{
-        await mongoose.connect(env.mongo_URI,{dbName:'User'})
+        await mongoose.connect(env.mongo_URI,
+            {dbName:"Users"}
+        )
         console.log('MongoDB Connected Successfully')
     }catch(err){
         console.log(err.message)
