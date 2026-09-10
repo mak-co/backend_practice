@@ -1,5 +1,4 @@
 import env from "../config/env.js"
-import mongoose from "mongoose"
 import jwt from "jsonwebtoken"
 import User from "../models/User.js"
 

@@ -51,7 +51,7 @@ export async function login(req, res) {
     });
   }
 
-  const existingUser = User.findOne(email);
+  const existingUser = await User.findOne({$or:[{userName}]});
 
   if (!existingUser) {
     res.status(400).json({
@@ -60,19 +60,22 @@ export async function login(req, res) {
     });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  if (hashedPassword !== existingUser.password) {
+  const checkPassword = await bcrypt.compare(password,existingUser.password);
+  console.log(checkPassword)
+  if (!checkPassword) {
     return res.status(400).json({
       success: false,
       message: "email or password is incorrect",
     });
   }
-  generateToken();
-  res.status(400).json({
+  generateToken(existingUser,res);
+  
+
+  res.status(200).json({
     success: true,
     message: "login Successfull",
     user: existingUser,
+    role:existingUser.role
   });
 }
 
@@ -85,6 +88,7 @@ export const getMe = (req, res) => {
       id: req.user._id,
       userName: req.user.userName,
       email: req.user.email,
+      role:req.user.role
     },
   });
 };
